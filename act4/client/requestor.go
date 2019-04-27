@@ -12,8 +12,8 @@ type Requestor struct {
 }
 
 // NewRequestor constructs a new Requestor
-func NewRequestor(options util.Options) (*Requestor, error) {
-	rh, err := NewRequestHandler(options)
+func NewRequestor(options *util.Options) (*Requestor, error) {
+	rh, err := NewRequestHandler(*options)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (e *Requestor) Invoke(req *proto.Message, res proto.Message) error {
 	}
 
 	// send
-	err = e.requestHandler.Send(data)
+	err = e.requestHandler.Send(&data)
 	if err != nil {
 		return err
 	}

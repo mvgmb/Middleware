@@ -15,8 +15,8 @@ type Invoker struct {
 }
 
 // NewInvoker constructs a new Invoker
-func NewInvoker(options util.Options) (*Invoker, error) {
-	rh, err := NewRequestHandler(options)
+func NewInvoker(options *util.Options) (*Invoker, error) {
+	rh, err := NewRequestHandler(*options)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (e *Invoker) Invoke() {
 		}
 
 		// Invoke RequestHandler to send an answer to the client
-		e.requestHandler.Send(bytes)
+		e.requestHandler.Send(&bytes)
 
 		// Close connection
 		e.requestHandler.Close()

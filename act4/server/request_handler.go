@@ -63,12 +63,12 @@ func (e *RequestHandler) Close() error {
 }
 
 // Send sends a message to the defined server
-func (e *RequestHandler) Send(message []byte) error {
+func (e *RequestHandler) Send(message *[]byte) error {
 	if e.netConn == nil {
 		return fmt.Errorf("Not Accepted")
 	}
 
-	_, err := e.netConn.Write(message)
+	_, err := e.netConn.Write(*message)
 	return err
 }
 

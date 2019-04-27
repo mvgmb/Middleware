@@ -34,8 +34,8 @@ func NewRequestHandler(options util.Options) (*RequestHandler, error) {
 }
 
 // Send sends a message to the defined server
-func (e *RequestHandler) Send(message []byte) error {
-	_, err := e.netConn.Write(message)
+func (e *RequestHandler) Send(message *[]byte) error {
+	_, err := e.netConn.Write(*message)
 	return err
 }
 

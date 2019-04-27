@@ -14,26 +14,6 @@ import (
 )
 
 func main() {
-	marshaller, err := util.NewMarshaller()
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Marshal test
-	message := util.NewMovieMessage([]byte("matilda"), "movieName", "OK", 200)
-	bytes, err := marshaller.Marshal(&message)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	res := pb.MovieMessage{}
-
-	err = marshaller.Unmarshal(&bytes, &res)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(res.String())
-
 	//	RequestHandlers test
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Are you a client (1) or server (2): ")
@@ -78,49 +58,10 @@ func serverTest() { //e *util.Marshaller) {
 		Protocol: "tcp",
 	}
 
-	invoker, err := server.NewInvoker(options)
+	invoker, err := server.NewInvoker(&options)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	invoker.Invoke()
-
-	// requestHandler, err := server.NewRequestHandler(options)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// err = requestHandler.Accept()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// bytes, err := requestHandler.Receive()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// res := pb.MovieMessage{}
-	// err = e.Unmarshal(&bytes, &res)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(res.String())
-
-	// response := util.NewMovieMessage([]byte("12,99"), "movieName", "OK", 200)
-
-	// data, err := e.Marshal(&response)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// err = requestHandler.Send(data)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// err = requestHandler.Close()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 }
