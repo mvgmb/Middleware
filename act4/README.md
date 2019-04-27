@@ -5,8 +5,7 @@ Implementar em Go as Camadas de Infraestrutura, Distribuição e Serviços Comun
 - Client Request Handler
 > TODO tratar timeouts e erros de invocação
 
-O Client Request Handler é responsável por gerenciar conexões de rede, enviar/receber invocações, tratar timeouts e erros de
-invocação
+O Client Request Handler é responsável por gerenciar conexões de rede, enviar/receber invocações, tratar timeouts e erros de invocação
 
 - Server Request Handler<br>
 > TODO aparentemente nada, provavelmente tratar os erros que aparecerem
@@ -14,17 +13,15 @@ invocação
 O Server Request Handler é responsável por receber a invocação, combinar fragmentos de mensagens (quando for o caso), encaminhar a invocação para o Invoker correto
 
 - Requestor<br>
-Considerando que: na rede só passa sequência de bytes, é
-preciso estabelecer uma conexão, a invocação precisa ser enviada
-ao objeto remoto, precisa receber o resultado da invocação,
-precisa tratar erros
-> TODO tudo
+> TODO tratar erros 
+
+Considerando que: na rede só passa sequência de bytes, é preciso estabelecer uma conexão, a invocação precisa ser enviada ao objeto remoto, precisa receber o resultado da invocação, precisa tratar erros
 
 - Invoker
 > TODO tudo
 
 - Marshaller
-> TODO alterar o proto para que ele passe os valores necessários para que fique de acordo com esta descrição.
+> ok
 
 Dados dos requests: object ID, nome da operação, parâmetros e valores de retorno, [informações de contexto]<br>
 Apenas streams de bytes são transportados pela rede

@@ -43,12 +43,12 @@ func (e *RequestHandler) Send(message []byte) error {
 func (e *RequestHandler) Receive() ([]byte, error) {
 	buffer := make([]byte, math.MaxInt16)
 
-	_, err := e.netConn.Read(buffer)
+	n, err := e.netConn.Read(buffer)
 	if err != nil {
 		return nil, err
 	}
 
-	return buffer, nil
+	return buffer[:n], nil
 }
 
 // Close closes the connection with the server

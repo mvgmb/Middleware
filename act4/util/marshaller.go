@@ -2,7 +2,6 @@ package util
 
 import (
 	"github.com/golang/protobuf/proto"
-	pb "github.com/mvgmb/Middleware/act4/proto"
 )
 
 type Marshaller struct {
@@ -14,18 +13,17 @@ func NewMarshaller() (*Marshaller, error) {
 }
 
 // Marshal serializes the message into bytes
-func Marshal(message proto.Message) ([]byte, error) {
-	return proto.Marshal(message)
+func Marshal(message *proto.Message) ([]byte, error) {
+	return proto.Marshal(*message)
 }
 
 // Unmarshal retrieves the serialized message
-func Unmarshal(message []byte) (*pb.MovieMessage, error) {
-	result := &pb.MovieMessage{}
-	err := proto.Unmarshal(message, result)
+func Unmarshal(bytes *[]byte, pb proto.Message) error {
+	err := proto.Unmarshal(*bytes, pb)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
 /*
