@@ -9,6 +9,7 @@ It is generated from these files:
 	util.proto
 
 It has these top-level messages:
+	Status
 	MovieMessage
 */
 package proto
@@ -18,14 +19,31 @@ import proto1 "github.com/golang/protobuf/proto"
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto1.Marshal
 
+type Status struct {
+	Code    uint64 `protobuf:"varint,1,opt,name=code" json:"code,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message" json:"message,omitempty"`
+}
+
+func (m *Status) Reset()         { *m = Status{} }
+func (m *Status) String() string { return proto1.CompactTextString(m) }
+func (*Status) ProtoMessage()    {}
+
 type MovieMessage struct {
-	TypeName    string `protobuf:"bytes,1,opt,name=type_name" json:"type_name,omitempty"`
-	MessageData []byte `protobuf:"bytes,2,opt,name=message_data,proto3" json:"message_data,omitempty"`
+	TypeName    string  `protobuf:"bytes,1,opt,name=type_name" json:"type_name,omitempty"`
+	MessageData []byte  `protobuf:"bytes,2,opt,name=message_data,proto3" json:"message_data,omitempty"`
+	Status      *Status `protobuf:"bytes,3,opt,name=status" json:"status,omitempty"`
 }
 
 func (m *MovieMessage) Reset()         { *m = MovieMessage{} }
 func (m *MovieMessage) String() string { return proto1.CompactTextString(m) }
 func (*MovieMessage) ProtoMessage()    {}
+
+func (m *MovieMessage) GetStatus() *Status {
+	if m != nil {
+		return m.Status
+	}
+	return nil
+}
 
 func init() {
 }

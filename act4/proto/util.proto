@@ -2,7 +2,13 @@ syntax = "proto3";
 
 package proto;
 
+message Status {
+    uint64 code = 1;
+    string message = 2;
+}
+
 message MovieMessage {
     string type_name = 1;
     bytes message_data = 2;
+    Status status = 3;
 }
