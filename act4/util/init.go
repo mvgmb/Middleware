@@ -27,8 +27,8 @@ type Options struct {
 // NewMovieMessage creates a new MovieMessage instance
 func NewMovieMessage(bytes []byte, typeName, statusMessage string, statusCode uint64) proto.Message {
 	status := &pb.Status{
-		Code:    123,
-		Message: "asa",
+		Code:    statusCode,
+		Message: statusMessage,
 	}
 	message := &pb.MovieMessage{
 		TypeName:    typeName,
