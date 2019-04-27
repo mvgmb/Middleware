@@ -13,12 +13,12 @@ func NewMarshaller() (*Marshaller, error) {
 }
 
 // Marshal serializes the message into bytes
-func Marshal(message *proto.Message) ([]byte, error) {
+func (e *Marshaller) Marshal(message *proto.Message) ([]byte, error) {
 	return proto.Marshal(*message)
 }
 
 // Unmarshal retrieves the serialized message
-func Unmarshal(bytes *[]byte, pb proto.Message) error {
+func (e *Marshaller) Unmarshal(bytes *[]byte, pb proto.Message) error {
 	err := proto.Unmarshal(*bytes, pb)
 	if err != nil {
 		return err

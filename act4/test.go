@@ -14,16 +14,20 @@ import (
 )
 
 func main() {
-	// // Marshal test
+	marshaller, err := util.NewMarshaller()
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Marshal test
 	message := util.NewMovieMessage([]byte("matilda"), "movieName", "OK", 200)
-	bytes, err := util.Marshal(&message)
+	bytes, err := marshaller.Marshal(&message)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	res := pb.MovieMessage{}
 
-	err = util.Unmarshal(&bytes, &res)
+	err = marshaller.Unmarshal(&bytes, &res)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +43,7 @@ func main() {
 	case "1":
 		clientTest()
 	case "2":
-		serverTest()
+		serverTest(marshaller)
 	default:
 		fmt.Println("Invalid input")
 	}
@@ -67,7 +71,7 @@ func clientTest() {
 	fmt.Println(res.String())
 }
 
-func serverTest() {
+func serverTest(e *util.Marshaller) {
 	options := util.Options{
 		Host:     "localhost",
 		Port:     8080,
@@ -89,7 +93,7 @@ func serverTest() {
 	}
 
 	res := pb.MovieMessage{}
-	err = util.Unmarshal(&bytes, &res)
+	err = e.Unmarshal(&bytes, &res)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,7 +101,7 @@ func serverTest() {
 
 	response := util.NewMovieMessage([]byte("12,99"), "movieName", "OK", 200)
 
-	data, err := util.Marshal(&response)
+	data, err := e.Marshal(&response)
 	if err != nil {
 		log.Fatal(err)
 	}

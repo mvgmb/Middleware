@@ -38,7 +38,7 @@ func (e *Requestor) Close() error {
 // Invoke works as the maestro
 func (e *Requestor) Invoke(req *proto.Message, res proto.Message) error {
 	// serialize
-	data, err := util.Marshal(req)
+	data, err := e.marshaller.Marshal(req)
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func (e *Requestor) Invoke(req *proto.Message, res proto.Message) error {
 	}
 
 	// deserialize and sends to client proxy
-	err = util.Unmarshal(&data, res)
+	err = e.marshaller.Unmarshal(&data, res)
 	if err != nil {
 		return err
 	}
