@@ -43,7 +43,7 @@ func main() {
 	case "1":
 		clientTest()
 	case "2":
-		serverTest(marshaller)
+		serverTest()
 	default:
 		fmt.Println("Invalid input")
 	}
@@ -71,48 +71,56 @@ func clientTest() {
 	fmt.Println(res.String())
 }
 
-func serverTest(e *util.Marshaller) {
+func serverTest() { //e *util.Marshaller) {
 	options := util.Options{
 		Host:     "localhost",
 		Port:     8080,
 		Protocol: "tcp",
 	}
-	requestHandler, err := server.NewRequestHandler(options)
+
+	invoker, err := server.NewInvoker(options)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = requestHandler.Accept()
-	if err != nil {
-		log.Fatal(err)
-	}
+	invoker.Invoke()
 
-	bytes, err := requestHandler.Receive()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// requestHandler, err := server.NewRequestHandler(options)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	res := pb.MovieMessage{}
-	err = e.Unmarshal(&bytes, &res)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(res.String())
+	// err = requestHandler.Accept()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	response := util.NewMovieMessage([]byte("12,99"), "movieName", "OK", 200)
+	// bytes, err := requestHandler.Receive()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	data, err := e.Marshal(&response)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// res := pb.MovieMessage{}
+	// err = e.Unmarshal(&bytes, &res)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println(res.String())
 
-	err = requestHandler.Send(data)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// response := util.NewMovieMessage([]byte("12,99"), "movieName", "OK", 200)
 
-	err = requestHandler.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// data, err := e.Marshal(&response)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// err = requestHandler.Send(data)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// err = requestHandler.Close()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 }
