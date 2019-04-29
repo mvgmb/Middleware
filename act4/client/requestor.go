@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"github.com/golang/protobuf/proto"
 	pb "github.com/mvgmb/Middleware/act4/proto"
 	"github.com/mvgmb/Middleware/act4/util"
@@ -12,8 +13,14 @@ type Requestor struct {
 	marshaller     *util.Marshaller
 }
 
+var lookupOptions = &util.Options{
+	Host:     "localhost",
+	Port:     1337,
+	Protocol: "tcp",
+}
+
 // NewRequestor constructs a new Requestor
-func NewRequestor(options *util.Options) (*Requestor, error) {
+func NewRequestor() (*Requestor, error) {
 	rh := NewRequestHandler()
 
 	marsh, err := util.NewMarshaller()
@@ -30,7 +37,50 @@ func NewRequestor(options *util.Options) (*Requestor, error) {
 }
 
 // Invoke works as the maestro
-func (e *Requestor) Invoke(options *util.Options, req *proto.Message) (interface{}, error) {
+func (e *Requestor) Invoke(req *proto.Message) (string, error) {
+	serviceName := util.NewMessage([]byte("Movie"), "Lookup", "OK", 200)
+
+	result, err := e.Request(&serviceName, lookupOptions)
+	if err != nil {
+		return "", err
+	}
+
+	res, ok := result.(pb.Message)
+	if !ok {
+		return "", fmt.Errorf("Not a Message")
+	}
+
+	if res.Status.Code != 200 {
+		return "", fmt.Errorf(res.Status.Message)
+	}
+
+	aor := util.StringToAOR(string(res.MessageData))
+
+	options := util.Options{
+		Host:     aor.Host,
+		Port:     aor.Port,
+		Protocol: "tcp",
+	}
+
+	result, err = e.Request(req, &options)
+	if err != nil {
+		return "", err
+	}
+
+	res, ok = result.(pb.Message)
+	if !ok {
+		return "", fmt.Errorf("Not a Message")
+	}
+
+	if res.Status.Code != 200 {
+		return "", fmt.Errorf(res.Status.Message)
+	}
+
+	return string(res.MessageData), nil
+}
+
+// Request handles the entire proceso, from opening to closing one connection
+func (e *Requestor) Request(req *proto.Message, options *util.Options) (interface{}, error) {
 	err := e.requestHandler.Open(*options)
 	if err != nil {
 		return nil, err

@@ -1,9 +1,14 @@
 package server
 
 import (
+	"github.com/golang/protobuf/proto"
 	pb "github.com/mvgmb/Middleware/act4/proto"
 	"github.com/mvgmb/Middleware/act4/util"
+
+	"fmt"
 	"log"
+	"reflect"
+	"strings"
 )
 
 // Invoker is the server side "maestro"
@@ -11,7 +16,7 @@ import (
 type Invoker struct {
 	requestHandler *RequestHandler
 	marshaller     *util.Marshaller
-	// serverProxy *ServerProxy
+	Proxy          *Proxy
 }
 
 // NewInvoker constructs a new Invoker
@@ -26,18 +31,18 @@ func NewInvoker(options *util.Options) (*Invoker, error) {
 		return nil, err
 	}
 
-	// TODO create ServerProxy
+	proxy := NewProxy()
 
 	e := &Invoker{
 		requestHandler: rh,
 		marshaller:     marsh,
-		//serverProxy: sp,
+		Proxy:          proxy,
 	}
 	return e, nil
 }
 
-// Register registers a new service on the lookup table
-func (e *Invoker) Register(serviceName string) error {
+// Register registers a new object on the lookup table
+func (e *Invoker) Register(remoteObjectName string) error {
 	options := util.Options{
 		Host:     "localhost",
 		Port:     1337,
@@ -51,10 +56,8 @@ func (e *Invoker) Register(serviceName string) error {
 	aor := util.AOR{
 		Host:     e.requestHandler.options.Host,
 		Port:     e.requestHandler.options.Port,
-		ObjectID: serviceName,
+		ObjectID: remoteObjectName,
 	}
-
-	log.Println(aor.String())
 
 	req := util.NewMessage([]byte(aor.String()), "Bind", "OK", 200)
 	bytes, err := e.marshaller.Marshal(&req)
@@ -78,10 +81,6 @@ func (e *Invoker) Register(serviceName string) error {
 		return err
 	}
 
-	if res.Status.Code == 200 {
-		log.Println("noice")
-	}
-
 	err = e.requestHandler.Close()
 	if err != nil {
 		return err
@@ -93,61 +92,69 @@ func (e *Invoker) Register(serviceName string) error {
 // Invoke is the core of the invoker
 // Here is where he manage the clients requests
 func (e *Invoker) Invoke() {
-	// Create remote object
-	err := e.Register("BestPrice")
+	e.Proxy.NewMovieObject()
+
+	err := e.Register("Movie")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	log.Printf("Listening at %s:%d\n", e.requestHandler.options.Host, e.requestHandler.options.Port)
+
 	for {
-		// Invoke RequestHandler to wait for client message
 		err := e.requestHandler.Accept()
 		if err != nil {
 			// TODO manage error
 			log.Fatal(err)
 		}
 
-		// Receive request
 		bytes, err := e.requestHandler.Receive()
 		if err != nil {
 			// TODO manage error
 			log.Fatal(err)
 		}
 
-		// Unmarshal request
 		req := pb.Message{}
 		e.marshaller.Unmarshal(&bytes, &req)
 
 		// test
 		log.Println("Request", req.String())
 
-		// Demultiplex where the message should go
-		// TODO
+		var res proto.Message
 
-		// Call required method
-		// TODO
+		if req.Status.Code != 200 {
+			res = util.ErrUnknown
+		} else {
+			call := strings.Split(req.TypeName, ".")
+			args := strings.Split(string(req.MessageData), ",")
 
-		// test
-		res := util.NewMessage([]byte("movie"), "BestPrice", "OK", 200)
-		if err != nil {
-			// TODO manage error
-			log.Fatal(err)
+			switch call[0] {
+			case "Movie":
+				result := Call(e.Proxy.Movie, call[1], args[0])
+				price := result[0].Int()
+				res = util.NewMessage([]byte(fmt.Sprint(price)), "Price", "OK", 200)
+			default:
+				res = util.ErrBadRequest
+			}
 		}
 
-		// test
-		log.Println("Responded", res.String())
-
-		// Marshal the method output response
 		bytes, err = e.marshaller.Marshal(&res)
 		if err != nil {
 			// TODO manage error
 			log.Fatal(err)
 		}
 
-		// Invoke RequestHandler to send an answer to the client
 		e.requestHandler.Send(&bytes)
 
-		// Close connection
 		e.requestHandler.Close()
 	}
+}
+
+// Call calls a given method
+func Call(any interface{}, name string, args ...interface{}) []reflect.Value {
+	inputs := make([]reflect.Value, len(args))
+	for i := range args {
+		inputs[i] = reflect.ValueOf(args[i])
+	}
+	return reflect.ValueOf(any).MethodByName(name).Call(inputs)
 }

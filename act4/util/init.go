@@ -10,7 +10,7 @@ var (
 	ErrBadRequest         = NewMessage([]byte(""), "", "Bad Request", 400)
 	ErrUnauthorized       = NewMessage([]byte(""), "", "Unauthorized", 401)
 	ErrForbidden          = NewMessage([]byte(""), "", "Forbidden", 403)
-	ErrNotFound           = NewMessage([]byte(""), "", "Service not found", 404)
+	ErrNotFound           = NewMessage([]byte(""), "", "Not found", 404)
 	ErrMethodNotAllowed   = NewMessage([]byte(""), "", "Method not allowed", 405)
 	ErrPayloadTooLarge    = NewMessage([]byte(""), "", "Payload too large!", 413)
 	ErrExpectationFailed  = NewMessage([]byte(""), "", "Expectation fail", 417)

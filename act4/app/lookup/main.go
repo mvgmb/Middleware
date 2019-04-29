@@ -62,6 +62,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		_, err = netConn.Write(bytes)
 		if err != nil {
 			log.Fatal(err)

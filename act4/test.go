@@ -30,19 +30,14 @@ func main() {
 }
 
 func clientTest() {
-	options := util.Options{
-		Host:     "localhost",
-		Port:     1337,
-		Protocol: "tcp",
-	}
-	requestor, err := client.NewRequestor(&options)
+	requestor, err := client.NewRequestor()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	req := util.NewMessage([]byte("BestPrice"), "Lookup", "OK", 200)
 
-	res, err := requestor.Invoke(&options, &req)
+	res, err := requestor.Invoke(&req)
 	if err != nil {
 		log.Fatal(err)
 	}
