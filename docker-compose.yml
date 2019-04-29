@@ -4,11 +4,11 @@ services:
     build:
       context: .
       dockerfile: ./app/server/Dockerfile
-  # lookup:
-  #   build:
-  #     context: .
-  #     dockerfile: ./app/lookup/Dockerfile
-  # client:
-  #   build:
-  #     context: .
-  #     dockerfile: ./app/client/Dockerfile
+  lookup:
+    build:
+      context: .
+      dockerfile: ./app/lookup/Dockerfile
+  client:
+    build:
+      context: .
+      dockerfile: ./app/client/Dockerfile
