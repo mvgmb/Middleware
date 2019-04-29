@@ -6,8 +6,8 @@ import (
 	"net"
 
 	"github.com/golang/protobuf/proto"
-	pb "github.com/mvgmb/Middleware/act4/proto"
-	"github.com/mvgmb/Middleware/act4/util"
+	pb "github.com/mvgmb/Middleware/rpc/proto"
+	"github.com/mvgmb/Middleware/rpc/util"
 )
 
 func main() {
@@ -68,5 +68,9 @@ func main() {
 			log.Fatal(err)
 		}
 
+		err = netConn.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }

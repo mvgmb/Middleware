@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/mvgmb/Middleware/act4/server"
-	"github.com/mvgmb/Middleware/act4/util"
+	"github.com/mvgmb/Middleware/rpc/server"
+	"github.com/mvgmb/Middleware/rpc/util"
 	"log"
 )
 

@@ -2,9 +2,10 @@ package client
 
 import (
 	"fmt"
+
 	"github.com/golang/protobuf/proto"
-	pb "github.com/mvgmb/Middleware/act4/proto"
-	"github.com/mvgmb/Middleware/act4/util"
+	pb "github.com/mvgmb/Middleware/rpc/proto"
+	"github.com/mvgmb/Middleware/rpc/util"
 )
 
 // Requestor deals with the access to the remote object
@@ -37,8 +38,8 @@ func NewRequestor() (*Requestor, error) {
 }
 
 // Invoke works as the maestro
-func (e *Requestor) Invoke(req *proto.Message) (string, error) {
-	serviceName := util.NewMessage([]byte("Movie"), "Lookup", "OK", 200)
+func (e *Requestor) Invoke(object string, req *proto.Message) (string, error) {
+	serviceName := util.NewMessage([]byte(object), "Lookup", "OK", 200)
 
 	result, err := e.Request(&serviceName, lookupOptions)
 	if err != nil {

@@ -2,7 +2,7 @@ package util
 
 import (
 	"github.com/golang/protobuf/proto"
-	pb "github.com/mvgmb/Middleware/act4/proto"
+	pb "github.com/mvgmb/Middleware/rpc/proto"
 )
 
 var (

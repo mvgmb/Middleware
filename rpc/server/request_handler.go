@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mvgmb/Middleware/act4/util"
+	"github.com/mvgmb/Middleware/rpc/util"
 )
 
 // RequestHandler defines the ServerRequestHandler struct body

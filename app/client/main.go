@@ -2,23 +2,35 @@ package main
 
 import (
 	"fmt"
-	"github.com/mvgmb/Middleware/act4/client"
+	"github.com/mvgmb/Middleware/rpc/client"
 	"log"
+	"time"
 )
 
 var proxy *client.Proxy
 
-func main() {
+func init() {
 	var err error
 	proxy, err = client.NewProxy()
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+func main() {
+	var price int
+	var err error
 
-	price, err := MoviePrice("Titanic")
-	if err != nil {
-		log.Println("Error:", err.Error())
+	t := time.Now()
+
+	for i := 0; i < 10000; i++ {
+		price, err = MoviePrice("Titanic")
+		if err != nil {
+			log.Println("Error:", err.Error())
+		}
 	}
+
+	fmt.Println(time.Since(t))
+
 	fmt.Println(price)
 }
 

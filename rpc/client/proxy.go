@@ -1,7 +1,7 @@
 package client 
 
 import (	
-	"github.com/mvgmb/Middleware/act4/util"
+	"github.com/mvgmb/Middleware/rpc/util"
 	"fmt"
 	"strconv"
 )
@@ -30,7 +30,7 @@ func NewProxy() (*Proxy, error) {
 func (e *Proxy) MoviePrice(movieName string) (int, error) {
 	req := util.NewMessage([]byte(movieName), "Movie.Price", "OK", 200)
 
-	res, err := e.requestor.Invoke(&req)
+	res, err := e.requestor.Invoke("Movie", &req)
 	if err != nil {
 		return -1, err
 	}

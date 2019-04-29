@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/mvgmb/Middleware/act4/movie"
+	"github.com/mvgmb/Middleware/rpc/movie"
 )
 
 // Proxy declares the ServerProxy

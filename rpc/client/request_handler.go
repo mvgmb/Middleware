@@ -6,7 +6,7 @@ import (
 	"math"
 	"net"
 
-	"github.com/mvgmb/Middleware/act4/util"
+	"github.com/mvgmb/Middleware/rpc/util"
 )
 
 // RequestHandler implements the client side communications manager

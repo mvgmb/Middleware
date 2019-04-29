@@ -1,0 +1,14 @@
+version: '3'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./app/server/Dockerfile
+  # lookup:
+  #   build:
+  #     context: .
+  #     dockerfile: ./app/lookup/Dockerfile
+  # client:
+  #   build:
+  #     context: .
+  #     dockerfile: ./app/client/Dockerfile

@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/golang/protobuf/proto"
-	pb "github.com/mvgmb/Middleware/act4/proto"
-	"github.com/mvgmb/Middleware/act4/util"
+	pb "github.com/mvgmb/Middleware/rpc/proto"
+	"github.com/mvgmb/Middleware/rpc/util"
 
 	"fmt"
 	"log"
@@ -116,9 +116,6 @@ func (e *Invoker) Invoke() {
 
 		req := pb.Message{}
 		e.marshaller.Unmarshal(&bytes, &req)
-
-		// test
-		log.Println("Request", req.String())
 
 		var res proto.Message
 
