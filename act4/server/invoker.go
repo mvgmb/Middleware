@@ -36,10 +36,68 @@ func NewInvoker(options *util.Options) (*Invoker, error) {
 	return e, nil
 }
 
+// Register registers a new service on the lookup table
+func (e *Invoker) Register(serviceName string) error {
+	options := util.Options{
+		Host:     "localhost",
+		Port:     1337,
+		Protocol: "tcp",
+	}
+	err := e.requestHandler.Open(&options)
+	if err != nil {
+		return err
+	}
+
+	aor := util.AOR{
+		Host:     e.requestHandler.options.Host,
+		Port:     e.requestHandler.options.Port,
+		ObjectID: serviceName,
+	}
+
+	log.Println(aor.String())
+
+	req := util.NewMessage([]byte(aor.String()), "Bind", "OK", 200)
+	bytes, err := e.marshaller.Marshal(&req)
+	if err != nil {
+		return err
+	}
+
+	err = e.requestHandler.Send(&bytes)
+	if err != nil {
+		return err
+	}
+
+	bytes, err = e.requestHandler.Receive()
+	if err != nil {
+		return err
+	}
+
+	res := pb.Message{}
+	err = e.marshaller.Unmarshal(&bytes, &res)
+	if err != nil {
+		return err
+	}
+
+	if res.Status.Code == 200 {
+		log.Println("noice")
+	}
+
+	err = e.requestHandler.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Invoke is the core of the invoker
 // Here is where he manage the clients requests
 func (e *Invoker) Invoke() {
 	// Create remote object
+	err := e.Register("BestPrice")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for {
 		// Invoke RequestHandler to wait for client message
@@ -57,7 +115,7 @@ func (e *Invoker) Invoke() {
 		}
 
 		// Unmarshal request
-		req := pb.MovieMessage{}
+		req := pb.Message{}
 		e.marshaller.Unmarshal(&bytes, &req)
 
 		// test
@@ -70,7 +128,7 @@ func (e *Invoker) Invoke() {
 		// TODO
 
 		// test
-		res := util.NewMovieMessage([]byte("movie"), "BestPrice", "OK", 200)
+		res := util.NewMessage([]byte("movie"), "BestPrice", "OK", 200)
 		if err != nil {
 			// TODO manage error
 			log.Fatal(err)

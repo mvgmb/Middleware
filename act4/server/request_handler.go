@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math"
 	"net"
+	"strconv"
+	"strings"
 
 	"github.com/mvgmb/Middleware/act4/util"
 )
@@ -17,10 +19,25 @@ type RequestHandler struct {
 
 // NewRequestHandler constructs a new ServerRequestHandler
 func NewRequestHandler(options util.Options) (*RequestHandler, error) {
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", options.Port))
+	addr := fmt.Sprintf("%s:%d", options.Host, options.Port)
+	if options.Port == 0 {
+		addr = fmt.Sprintf("%s:", options.Host)
+	}
+
+	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		return nil, err
 	}
+
+	resultAddr := strings.Split(listener.Addr().String(), ":")
+	options.Host = resultAddr[0]
+
+	num, err := strconv.ParseUint(resultAddr[1], 10, 16)
+	if err != nil {
+		return nil, err
+	}
+
+	options.Port = uint16(num)
 
 	e := &RequestHandler{
 		options:  options,
@@ -42,7 +59,21 @@ func (e *RequestHandler) Accept() error {
 	}
 
 	e.netConn = newConn
+	return nil
+}
 
+// Open opens a new connection
+func (e *RequestHandler) Open(options *util.Options) error {
+	if e.netConn != nil {
+		return fmt.Errorf("Already Connected")
+	}
+
+	netConn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", options.Host, options.Port))
+	if err != nil {
+		return err
+	}
+
+	e.netConn = netConn
 	return nil
 }
 

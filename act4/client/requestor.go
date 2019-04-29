@@ -2,6 +2,7 @@ package client
 
 import (
 	"github.com/golang/protobuf/proto"
+	pb "github.com/mvgmb/Middleware/act4/proto"
 	"github.com/mvgmb/Middleware/act4/util"
 )
 
@@ -13,10 +14,8 @@ type Requestor struct {
 
 // NewRequestor constructs a new Requestor
 func NewRequestor(options *util.Options) (*Requestor, error) {
-	rh, err := NewRequestHandler(*options)
-	if err != nil {
-		return nil, err
-	}
+	rh := NewRequestHandler()
+
 	marsh, err := util.NewMarshaller()
 	if err != nil {
 		return nil, err
@@ -30,36 +29,38 @@ func NewRequestor(options *util.Options) (*Requestor, error) {
 	return e, nil
 }
 
-// Close closes the request handler connection
-func (e *Requestor) Close() error {
-	return e.requestHandler.Close()
-}
-
 // Invoke works as the maestro
-func (e *Requestor) Invoke(req *proto.Message, res proto.Message) error {
-	// serialize
+func (e *Requestor) Invoke(options *util.Options, req *proto.Message) (interface{}, error) {
+	err := e.requestHandler.Open(*options)
+	if err != nil {
+		return nil, err
+	}
+
 	data, err := e.marshaller.Marshal(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// send
 	err = e.requestHandler.Send(&data)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// receive
 	data, err = e.requestHandler.Receive()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// deserialize and sends to client proxy
-	err = e.marshaller.Unmarshal(&data, res)
+	res := pb.Message{}
+	err = e.marshaller.Unmarshal(&data, &res)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	err = e.requestHandler.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

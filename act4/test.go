@@ -32,29 +32,29 @@ func main() {
 func clientTest() {
 	options := util.Options{
 		Host:     "localhost",
-		Port:     8080,
+		Port:     1337,
 		Protocol: "tcp",
 	}
-	requestor, err := client.NewRequestor(options)
+	requestor, err := client.NewRequestor(&options)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	req := util.NewMovieMessage([]byte("matilda"), "movieName", "OK", 200)
-	res := pb.MovieMessage{}
+	req := util.NewMessage([]byte("BestPrice"), "Lookup", "OK", 200)
 
-	err = requestor.Invoke(&req, &res)
+	res, err := requestor.Invoke(&options, &req)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(res.String())
+	message := res.(pb.Message)
+	fmt.Println(message.String())
 }
 
-func serverTest() { //e *util.Marshaller) {
+func serverTest() {
 	options := util.Options{
 		Host:     "localhost",
-		Port:     8080,
+		Port:     0,
 		Protocol: "tcp",
 	}
 
