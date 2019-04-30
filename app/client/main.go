@@ -17,17 +17,20 @@ func init() {
 	}
 }
 func main() {
+	var price int
+	var err error
 
 	t := time.Now()
 
-	for i := 0; i < 1000; i++ {
-		_, err := MoviePrice("Titanic")
+	for i := 0; i < 10000; i++ {
+		price, err = MoviePrice("Titanic")
 		if err != nil {
 			log.Println("Error:", err.Error())
 		}
 	}
 
 	fmt.Println(time.Since(t))
+	fmt.Println(price)
 }
 
 // MoviePrice returns the requested movie price

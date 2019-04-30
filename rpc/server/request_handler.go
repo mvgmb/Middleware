@@ -82,13 +82,13 @@ func (e *RequestHandler) Close() error {
 	if e.netConn == nil {
 		return fmt.Errorf("Already Closed")
 	}
+	netConn := e.netConn
+	e.netConn = nil
 
-	err := e.netConn.Close()
+	err := netConn.Close()
 	if err != nil {
 		return err
 	}
-
-	e.netConn = nil
 
 	return nil
 }

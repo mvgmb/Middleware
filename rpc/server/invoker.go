@@ -94,32 +94,31 @@ func (e *Invoker) Register(remoteObjectName string) error {
 func (e *Invoker) Invoke() {
 	e.Proxy.NewMovieObject(e)
 
-	err := e.Register("Movie")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	log.Printf("Listening at %s:%d\n", e.requestHandler.options.Host, e.requestHandler.options.Port)
 
 	for {
 		err := e.requestHandler.Accept()
 		if err != nil {
-			// TODO manage error
-			log.Fatal(err)
+			log.Println(err)
+			e.requestHandler.Close()
+			continue
 		}
 
 		bytes, err := e.requestHandler.Receive()
 		if err != nil {
-			// TODO manage error
-			log.Fatal(err)
+			log.Println(err)
+			e.requestHandler.Close()
+			continue
 		}
-
-		req := pb.Message{}
-		e.marshaller.Unmarshal(&bytes, &req)
 
 		var res proto.Message
 
-		if req.Status.Code != 200 {
+		req := pb.Message{}
+		err = e.marshaller.Unmarshal(&bytes, &req)
+		if err != nil {
+			log.Println(err)
+			res = util.ErrBadRequest
+		} else if req.Status.Code != 200 {
 			res = util.ErrUnknown
 		} else {
 			call := strings.Split(req.TypeName, ".")
@@ -137,8 +136,7 @@ func (e *Invoker) Invoke() {
 
 		bytes, err = e.marshaller.Marshal(&res)
 		if err != nil {
-			// TODO manage error
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		e.requestHandler.Send(&bytes)
