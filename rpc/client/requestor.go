@@ -59,13 +59,13 @@ func (e *Requestor) Invoke(req *proto.Message, options *util.Options) (proto.Mes
 		return nil, err
 	}
 
-	if res.Status.Code != 200 {
-		return nil, fmt.Errorf(res.Status.Message)
-	}
-
 	err = e.requestHandler.Close()
 	if err != nil {
 		return nil, err
+	}
+
+	if res.Status.Code != 200 {
+		return nil, fmt.Errorf(res.Status.Message)
 	}
 
 	return &res, nil

@@ -140,8 +140,14 @@ func (e *Invoker) Invoke() {
 		}
 
 		e.requestHandler.Send(&bytes)
+		if err != nil {
+			log.Println(err)
+		}
 
 		e.requestHandler.Close()
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 
