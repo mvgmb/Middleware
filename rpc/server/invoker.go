@@ -92,7 +92,7 @@ func (e *Invoker) Register(remoteObjectName string) error {
 // Invoke is the core of the invoker
 // Here is where he manage the clients requests
 func (e *Invoker) Invoke() {
-	e.Proxy.NewMovieObject()
+	e.Proxy.NewMovieObject(e)
 
 	err := e.Register("Movie")
 	if err != nil {

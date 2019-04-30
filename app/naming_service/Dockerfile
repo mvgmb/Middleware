@@ -1,7 +1,7 @@
 FROM golang:latest
 
 WORKDIR /go/src/github.com/mvgmb/Middleware
-COPY ./app/lookup .
+COPY ./app/naming_service .
 COPY ./rpc ./rpc
 
 RUN go get -v ./... && \

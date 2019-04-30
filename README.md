@@ -1,4 +1,4 @@
 # Middleware
 Middleware activities
 
-docker 
+docker run --net=host middleware_

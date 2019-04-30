@@ -6,8 +6,7 @@ import (
 
 // Proxy declares the ServerProxy
 type Proxy struct {
-	Invoker *Invoker
-	Movie   *movie.Movie
+	Movie *movie.Movie
 }
 
 // NewProxy constructs a new ServerProxy
@@ -16,6 +15,12 @@ func NewProxy() *Proxy {
 }
 
 // NewMovieObject constructs a new Moview object instance
-func (e *Proxy) NewMovieObject() {
+func (e *Proxy) NewMovieObject(invoker *Invoker) error {
+	err := invoker.Register("Movie")
+	if err != nil {
+		return err
+	}
+
 	e.Movie = &movie.Movie{}
+	return nil
 }

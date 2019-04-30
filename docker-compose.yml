@@ -4,10 +4,10 @@ services:
     build:
       context: .
       dockerfile: ./app/server/Dockerfile
-  lookup:
+  naming_service:
     build:
       context: .
-      dockerfile: ./app/lookup/Dockerfile
+      dockerfile: ./app/naming_service/Dockerfile
   client:
     build:
       context: .
