@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/mvgmb/Middleware/rpc/server"
 	"github.com/mvgmb/Middleware/rpc/util"
-	"log"
 )
 
 var (
@@ -25,13 +26,4 @@ func init() {
 
 func main() {
 	invoker.Invoke()
-}
-
-// MoviePrice returns the requested movie price
-func MoviePrice(movieName string) (int, error) {
-	price, err := invoker.Proxy.Movie.Price(movieName)
-	if err != nil {
-		return -1, err
-	}
-	return price, nil
 }

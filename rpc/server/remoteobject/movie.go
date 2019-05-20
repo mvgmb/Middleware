@@ -1,4 +1,4 @@
-package movie
+package remoteobject
 
 import "fmt"
 

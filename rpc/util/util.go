@@ -1,7 +1,6 @@
 package util
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -13,29 +12,6 @@ type AOR struct {
 	Host     string
 	Port     uint16
 	ObjectID string
-}
-
-var (
-	servicesTable = make(map[string][]AOR)
-	roundRobin    = -1
-)
-
-func Bind(aor *AOR) {
-	servicesTable[aor.ObjectID] = append(servicesTable[aor.ObjectID], *aor)
-}
-
-func Lookup(serviceName string) (*AOR, error) {
-	if _, ok := servicesTable[serviceName]; !ok {
-		return nil, errors.New("404 - Service not found")
-	}
-
-	if roundRobin+1 == len(servicesTable[serviceName]) {
-		roundRobin = 0
-	} else {
-		roundRobin++
-	}
-
-	return &servicesTable[serviceName][roundRobin], nil
 }
 
 func (e *AOR) String() string {

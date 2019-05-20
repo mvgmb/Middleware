@@ -9,21 +9,16 @@ import (
 )
 
 
-// Proxy implements the ClientProxy
+// Proxy implements the MovieProxy
 type Proxy struct {
 	requestor *Requestor
 }
 
 var (
-	lookupOptions = &util.Options{
-		Host:     "localhost",
-		Port:     1337,
-		Protocol: "tcp",
-	}
 	options *util.Options
 )
 
-// NewProxy constructs a new ClientProxy
+// NewProxy constructs a new MovieProxy
 func NewProxy() (*Proxy, error) {
 	requestor, err := NewRequestor()
 	if err != nil {
@@ -37,35 +32,6 @@ func NewProxy() (*Proxy, error) {
 	}
 
 	return e, nil
-}
-
-// Lookup works as the maestro
-func (e *Requestor) Lookup(object string) error {
-	serviceName := util.NewMessage([]byte(object), "Lookup", "OK", 200)
-
-	result, err := e.Invoke(&serviceName, lookupOptions)
-	if err != nil {
-		return err
-	}
-
-	res, ok := result.(*pb.Message)
-	if !ok {
-		return fmt.Errorf("Not a Message")
-	}
-
-	if res.Status.Code != 200 {
-		return fmt.Errorf(res.Status.Message)
-	}
-
-	aor := util.StringToAOR(string(res.MessageData))
-
-	options = &util.Options{
-		Host:     aor.Host,
-		Port:     aor.Port,
-		Protocol: "tcp",
-	}
-
-	return nil
 }
 
 // MoviePrice return the requested movie price
@@ -82,7 +48,7 @@ func (e *Proxy) MoviePrice(movieName string) (int, error) {
 		return -1, fmt.Errorf("Not a Message")
 	}
 
-	num, err := strconv.ParseUint(string(message.MessageData), 10, 16)
+	num, err := strconv.ParseInt(string(message.MessageData), 10, 16)
 	if err != nil {
 		return -1, fmt.Errorf("Not a number")
 	}

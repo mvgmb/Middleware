@@ -1,16 +1,14 @@
 package server
 
-import (
-	"github.com/mvgmb/Middleware/rpc/movie"
-)
+import "github.com/mvgmb/Middleware/rpc/server/remoteobject"
 
 // Proxy declares the ServerProxy
 type Proxy struct {
-	Movie *movie.Movie
+	Movie *remoteobject.Movie
 }
 
 // NewProxy constructs a new ServerProxy
-func NewProxy() *Proxy {
+func NewMovieProxy() *Proxy {
 	return &Proxy{}
 }
 
@@ -21,6 +19,6 @@ func (e *Proxy) NewMovieObject(invoker *Invoker) error {
 		return err
 	}
 
-	e.Movie = &movie.Movie{}
+	e.Movie = &remoteobject.Movie{}
 	return nil
 }
